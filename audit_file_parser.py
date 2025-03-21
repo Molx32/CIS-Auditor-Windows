@@ -81,7 +81,13 @@ def find_element(audit: str) -> None:
         else:
             type = type.strip()
 
-        description = regexes['description'].search(item_str)
+        # Handle description to find item ID, which can be in regular descriptions or in 'report' nodes
+        if "condition" == item.parent.name:
+            if_node     = item.parent.parent
+            report_str  = str(if_node.find("report"))
+            description = regexes['description'].search(report_str)
+        else:
+            description = regexes['description'].search(item_str)
         description = description.group(1) if description else None
         description = description.replace('"', '')
 
